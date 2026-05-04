@@ -1,0 +1,9 @@
+feeds:
+  - name: "TechCrunch"
+    url: "https://techcrunch.com/feed/"
+  - name: "The Verge"
+    url: "https://www.theverge.com/rss/index.xml"
+
+preferences:
+  summary_length: "concise" # concise, detailed
+  language: "English"
