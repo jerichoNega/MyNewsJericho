@@ -7,7 +7,7 @@ class RSSParser:
 
     def fetch_new_entries(self, state_manager):
         new_entries = []
-        headers = {'User-Agent': 'Mozilla/5.0 (MyNewsJericho Bot)'}
+        headers = {'User-Agent': 'Mozilla/5.0 (MyNewsJericho Messenger)'}
         for feed in self.feeds_config:
             print(f"Fetching feed: {feed['name']}...")
             try:

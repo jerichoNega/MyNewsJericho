@@ -9,8 +9,8 @@ from summarizer import Summarizer
 from messenger import Messenger
 
 def main():
-    parser = argparse.ArgumentParser(description="MyNewsJericho: Newsletter Aggregator WhatsApp Bot")
-    parser.add_argument("--dry-run", action="store_true", help="Run without sending WhatsApp messages or calling AI")
+    parser = argparse.ArgumentParser(description="MyNewsJericho: Newsletter Aggregator WhatsApp Messenger")
+    parser.add_argument("--dry-run", action="store_true", help="Run without sending WhatsApp messages or calling the engine")
     parser.add_argument("--limit", type=int, default=5, help="Limit number of articles to process")
     args = parser.parse_args()
 
@@ -43,7 +43,7 @@ def main():
         print(f"--- DRY RUN ---\nSource: {entry['source']}\nTitle: {entry['title']}\n--- END DRY RUN ---")
         return
 
-    # Initialize AI and Messenger
+    # Initialize Engine and Messenger
     gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
     twilio_sid = os.getenv("TWILIO_ACCOUNT_SID", "").strip()
     twilio_token = os.getenv("TWILIO_AUTH_TOKEN", "").strip()
@@ -63,7 +63,7 @@ def main():
             language=config['preferences'].get('language', 'English')
         )
         
-        print(f"AI SUMMARY:\n{summary}\n")
+        print(f"SUMMARY:\n{summary}\n")
         
         # 2. Format Message
         full_message = f"*Newsletter Summary*\n\n{summary}\n\nRead more: {entry['link']}"
