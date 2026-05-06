@@ -20,9 +20,15 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="MyNewsJericho AI API")
 
 # CORS setup for React frontend
+origins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    os.getenv("FRONTEND_URL", "*")
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, restrict this
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
