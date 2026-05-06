@@ -3,3 +3,8 @@ google-generativeai
 twilio
 python-dotenv
 pyyaml
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+requests

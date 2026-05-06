@@ -1,13 +1,44 @@
 import feedparser
 import requests
+from models import Article
+from sqlalchemy.orm import Session
+import datetime
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 class RSSParser:
     def __init__(self, feeds_config):
         self.feeds_config = feeds_config
 
-    def fetch_new_entries(self, state_manager):
+    def _extract_image(self, entry):
+        # 1. Media RSS
+        if 'media_content' in entry and entry.media_content:
+            return entry.media_content[0]['url']
+        if 'media_thumbnail' in entry and entry.media_thumbnail:
+            return entry.media_thumbnail[0]['url']
+        
+        # 2. Enclosures
+        if 'enclosures' in entry:
+            for enc in entry.enclosures:
+                if enc.get('type', '').startswith('image/'):
+                    return enc['href']
+        
+        # 3. BeautifulSoup fallback from summary/content
+        content = entry.get('summary', '') or entry.get('description', '')
+        if 'content' in entry:
+            content = entry.content[0].value
+            
+        if content:
+            soup = BeautifulSoup(content, 'html.parser')
+            img = soup.find('img')
+            if img and img.get('src'):
+                return urljoin(entry.get('link', ''), img['src'])
+        
+        return None
+
+    def fetch_new_entries_to_db(self, db: Session):
         new_entries = []
-        headers = {'User-Agent': 'Mozilla/5.0 (MyNewsJericho Messenger)'}
+        headers = {'User-Agent': 'Mozilla/5.0 (MyNewsJericho AI)'}
         for feed in self.feeds_config:
             print(f"Fetching feed: {feed['name']}...")
             try:
@@ -16,18 +47,31 @@ class RSSParser:
                 parsed_feed = feedparser.parse(response.text)
                 
                 for entry in parsed_feed.entries:
-                    # Use link or id as a unique identifier
                     item_id = entry.get('id') or entry.get('link')
                     
-                    if item_id and state_manager.is_new(item_id):
-                        new_entries.append({
-                            'source': feed['name'],
-                            'title': entry.get('title', 'No Title'),
-                            'link': entry.get('link', ''),
-                            'summary': entry.get('summary', entry.get('description', '')),
-                            'id': item_id
-                        })
+                    if not item_id:
+                        continue
+                        
+                    exists = db.query(Article).filter(Article.external_id == item_id).first()
+                    if not exists:
+                        image_url = self._extract_image(entry)
+                        
+                        new_article = Article(
+                            external_id=item_id,
+                            title=entry.get('title', 'No Title'),
+                            source=feed['name'],
+                            url=entry.get('link', ''),
+                            summary=entry.get('summary', entry.get('description', '')),
+                            image_url=image_url,
+                            category=feed.get('category', 'General'),
+                            published_at=datetime.datetime.now()
+                        )
+                        db.add(new_article)
+                        new_entries.append(new_article)
+                
+                db.commit()
             except Exception as e:
                 print(f"Error fetching {feed['name']}: {e}")
+                db.rollback()
         
         return new_entries

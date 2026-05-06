@@ -2,3 +2,7 @@
 seen_items.json
 venv/
 __pycache__/
+venv/
+*.db
+.env
+__pycache__/
