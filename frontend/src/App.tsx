@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Bookmark, RefreshCw, Sparkles, ExternalLink, Bell, BellOff, X, Globe } from 'lucide-react';
+import { Bookmark, RefreshCw, Sparkles, ExternalLink, Bell, BellOff, X, Globe, MessageCircle } from 'lucide-react';
 import './App.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -73,9 +73,19 @@ function App() {
   const handleFetch = async () => {
     try {
       await axios.post(`${API_BASE_URL}/fetch`);
-      alert('Fetching new articles in background...');
+      alert('Fetching new articles and sending top ones to WhatsApp...');
     } catch (error) {
       console.error('Error triggering fetch:', error);
+    }
+  };
+
+  const handleWhatsApp = async (id: number) => {
+    try {
+      await axios.post(`${API_BASE_URL}/whatsapp/${id}`);
+      alert('AI Summary sent to your WhatsApp!');
+    } catch (error) {
+      console.error('Error sending to WhatsApp:', error);
+      alert('Failed to send WhatsApp message. Check your Twilio setup.');
     }
   };
 
@@ -211,6 +221,9 @@ function App() {
                       Quick Preview <ExternalLink size={14} />
                     </span>
                     <div className="actions">
+                      <button onClick={(e) => { e.stopPropagation(); handleWhatsApp(article.id); }} title="Send to WhatsApp">
+                        <MessageCircle size={18} color="#25D366" />
+                      </button>
                       <button onClick={(e) => { e.stopPropagation(); handleSummarize(article.id); }} title="AI Summarize">
                         <Sparkles size={18} color={article.ai_summary ? '#6366f1' : '#64748b'} />
                       </button>
@@ -266,6 +279,13 @@ function App() {
               </div>
             </div>
             <div className="drawer-footer">
+              <button 
+                onClick={() => handleWhatsApp(selectedArticle.id)} 
+                className="btn-secondary"
+                title="Send to WhatsApp"
+              >
+                <MessageCircle size={20} color="#25D366" />
+              </button>
               <a href={selectedArticle.url} target="_blank" rel="noopener noreferrer" className="btn-primary">
                 Visit Full Website <ExternalLink size={18} />
               </a>
