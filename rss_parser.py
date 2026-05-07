@@ -33,12 +33,35 @@ class RSSParser:
             img = soup.find('img')
             if img and img.get('src'):
                 return urljoin(entry.get('link', ''), img['src'])
+
+        # 4. Final Fallback: Scrape OpenGraph from URL
+        try:
+            url = entry.get('link')
+            if url:
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                }
+                resp = requests.get(url, timeout=5, headers=headers)
+                if resp.status_code == 200:
+                    page_soup = BeautifulSoup(resp.text, 'html.parser')
+                    og_image = page_soup.find('meta', property='og:image')
+                    if og_image and og_image.get('content'):
+                        return og_image['content']
+                    
+                    # Also check twitter:image
+                    twitter_image = page_soup.find('meta', name='twitter:image')
+                    if twitter_image and twitter_image.get('content'):
+                        return twitter_image['content']
+        except:
+            pass
         
         return None
 
     def fetch_new_entries_to_db(self, db: Session):
         new_entries = []
-        headers = {'User-Agent': 'Mozilla/5.0 (MyNewsJericho AI)'}
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
         for feed in self.feeds_config:
             print(f"Fetching feed: {feed['name']}...")
             try:

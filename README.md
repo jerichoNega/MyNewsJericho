@@ -1,57 +1,69 @@
-# MyNewsJericho 📰
+# MyNewsJericho AI
 
-A streamlined Newsletter Aggregator and WhatsApp Messenger that pulls daily news from RSS feeds, processes them into high-signal summaries, and sends them directly to your phone.
+MyNewsJericho AI is a high-performance, full-stack news aggregation and analysis dashboard designed specifically for the AI ecosystem. It provides an immersive, visual command center for tracking the latest breakthroughs, research papers, and industry trends from world-class sources.
 
-## Features
-- **RSS Ingestion:** Monitors multiple feeds (TechCrunch, The Verge, etc.).
-- **Smart Processing:** Uses custom engines for concise, high-signal TL;DRs.
-- **WhatsApp Delivery:** Sends updates via WhatsApp.
-- **State Management:** Tracks read articles to avoid duplicate messages.
+## ✨ Core Features
 
-## Setup
+*   **Elite Source Aggregation**: Real-time tracking of OpenAI, Google AI, TechCrunch AI, VentureBeat, arXiv (cs.AI), and HackerNews.
+*   **Intelligent Summarization**: Integrated AI-powered content synthesis that extracts the "Core Concept" from long-form articles and research papers.
+*   **Immersive Smart Preview**: A sophisticated side-panel preview system with spring-style animations, allowing users to analyze articles and glimpse source websites without leaving the feed.
+*   **Visual-First Dashboard**: Deep image scraping that captures featured thumbnails from article OpenGraph data for a professional, media-rich experience.
+*   **Real-time Notifications**: Browser-level notification system that alerts you the moment groundbreaking AI news is indexed.
+*   **Smart Filtering & Bookmarking**: Categorized views (Development, Trends, Research, Tech) and a persistent bookmarking system for deep study.
 
-### 1. Prerequisites
-- Python 3.8+
-- A Twilio Account (for WhatsApp)
-- A processing engine API key
+## 🛠️ Technical Architecture
 
-### 2. Installation
-```bash
-git clone <this-repo>
-cd MyNewsJericho
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+### Backend (Python/FastAPI)
+- **FastAPI**: High-concurrency REST API.
+- **SQLAlchemy + SQLite**: Robust data persistence and caching.
+- **Feedparser & BeautifulSoup4**: Advanced RSS aggregation and deep OpenGraph image scraping.
+- **Gemini Pro API**: Large Language Model integration for intelligent summarization.
 
-### 3. Configuration
-1. Copy `.env.example` to `.env`:
+### Frontend (React/TypeScript)
+- **React 19 + Vite**: Modern, ultra-fast frontend performance.
+- **Lucide React**: Clean, consistent iconography.
+- **Axios**: Sophisticated API state management with polling and loading handlers.
+- **CSS3 Animations**: Custom cubic-bezier spring animations and responsive grid layouts.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- Google Gemini API Key
+
+### Installation
+
+1. **Clone and Setup Backend**:
    ```bash
-   cp .env.example .env
+   cd MyNewsJericho
+   python -m venv venv
+   source venv/bin/activate  # venv\Scripts\activate on Windows
+   pip install -r requirements.txt
    ```
-2. Fill in your credentials in `.env`:
-   - `TWILIO_ACCOUNT_SID`
-   - `TWILIO_AUTH_TOKEN`
-   - `TWILIO_WHATSAPP_NUMBER`
-   - `GEMINI_API_KEY` (Processing Engine Key)
-   - `USER_WHATSAPP_NUMBER` (Your phone number)
 
-3. Customize your feeds in `config.yaml`.
+2. **Configure Environment**:
+   Create a `.env` file in the root:
+   ```env
+   GEMINI_API_KEY=your_key_here
+   ```
 
-### 4. Running the System
-**Dry Run (Test only):**
-```bash
-python main.py --dry-run
-```
+3. **Setup Frontend**:
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-**Live Run (Sends messages):**
-```bash
-python main.py
-```
+4. **Run the System**:
+   - Backend: `uvicorn api:app --reload`
+   - Frontend: `npm run dev`
 
-## Automation
-To run this daily, you can set up a cron job:
-```bash
-0 9 * * * /path/to/MyNewsJericho/venv/bin/python /path/to/MyNewsJericho/main.py
-```
-This will run the system every day at 9:00 AM.
+## 🌐 Deployment
+
+The system is configured for split-deployment:
+- **Backend**: Ready for Render or Heroku (Procfile and `render.yaml` included).
+- **Frontend**: Ready for Netlify or Vercel (`netlify.toml` included).
+
+## 📝 License
+
+MIT
