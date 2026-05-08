@@ -62,6 +62,10 @@ class ArticleSchema(BaseModel):
     class Config:
         from_attributes = True
 
+@app.get("/")
+def health_check():
+    return {"status": "alive", "message": "MyNewsJericho AI Backend is running!"}
+
 @app.get("/api/news", response_model=List[ArticleSchema])
 def get_news(category: Optional[str] = None, db: Session = Depends(get_db)):
     query = db.query(models.Article)
