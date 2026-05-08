@@ -1,5 +1,8 @@
 # MyNewsJericho AI
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/jerichoNega/MyNewsJericho)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/jerichoNega/MyNewsJericho)
+
 MyNewsJericho AI is a high-performance, full-stack news aggregation and analysis dashboard designed specifically for the AI ecosystem. It provides an immersive, visual command center for tracking the latest breakthroughs, research papers, and industry trends from world-class sources.
 
 ## ✨ Core Features
